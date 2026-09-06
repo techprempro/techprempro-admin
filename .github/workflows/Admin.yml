@@ -11,6 +11,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: ExtractAdminProject
+        run: unzip -q TechPremPro_Admin_LoginFix.zip -d buildsrc
+
       - name: SetUpJDK17
         uses: actions/setup-java@v4
         with:
@@ -23,11 +26,11 @@ jobs:
           gradle-version: '8.9'
 
       - name: BuildDebugAPK
-        working-directory: admin_src/TechPremProAdmin
+        working-directory: buildsrc/admin_src/TechPremProAdmin
         run: gradle assembleDebug --stacktrace
 
       - name: UploadAPK
         uses: actions/upload-artifact@v4
         with:
           name: TechPremPro-Admin-LoginFix-APK
-          path: admin_src/TechPremProAdmin/app/build/outputs/apk/debug/*.apk
+          path: buildsrc/admin_src/TechPremProAdmin/app/build/outputs/apk/debug/*.apk

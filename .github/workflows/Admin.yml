@@ -11,23 +11,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ExtractAdminProject
-        run: unzip -q TechPremPro_Admin_LoginFix.zip -d buildsrc
+      - name: ExtractProject
+        run: |
+          unzip -q TechPremPro_Admin_LoginFix.zip -d buildsrc
+          ls -la buildsrc/admin_src/TechPremProAdmin
+          find buildsrc/admin_src/TechPremProAdmin -maxdepth 3 -type f
 
-      - name: SetUpJDK17
+      - name: SetupJDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: SetUpGradle
+      - name: SetupGradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: BuildDebugAPK
+      - name: GenerateWrapper
         working-directory: buildsrc/admin_src/TechPremProAdmin
-        run: gradle assembleDebug --stacktrace
+        run: gradle wrapper --gradle-version 8.9
+
+      - name: BuildAPK
+        working-directory: buildsrc/admin_src/TechPremProAdmin
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: UploadAPK
         uses: actions/upload-artifact@v4
